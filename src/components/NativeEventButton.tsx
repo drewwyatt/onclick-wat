@@ -10,7 +10,7 @@ const View = styled(Button)`
 type ButtonProps = DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 type Props =
   & ButtonProps
-  & { onClick: EventListenerOrEventListenerObject };
+  & { onClick: EventListener };
 
 export const NativeEventButton: FC<Props> = ({ onClick, ...rest }) => {
   const ref = useNativeEvent('click', onClick)

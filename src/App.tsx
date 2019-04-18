@@ -9,9 +9,6 @@ const setCount = (n: number) => {
 }
 
 const listener  = (e: any) => {
-  if (!!e && !!e.stopImmediatePropagation) {
-    e.stopImmediatePropagation();
-  }
   setCount(++count);
 };
 
