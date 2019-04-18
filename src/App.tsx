@@ -1,4 +1,4 @@
-import React, { Component, FC } from 'react';
+import React, { Component } from 'react';
 import { SomeWrappedExternalLib } from './SomeWrappedExternalLib';
 import { Button, NativeEventButton } from './components';
 import './App.css';
