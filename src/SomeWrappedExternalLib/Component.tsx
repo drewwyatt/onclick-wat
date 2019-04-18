@@ -4,6 +4,8 @@ import { doSomething } from './script';
 
 const Container = styled.fieldset`
   border-color: white;
+  display: flex;
+  margin: 10px 0;
 `;
 
 export const SomeWrappedExternalLib: React.FC = ({ children, ...props }) => {

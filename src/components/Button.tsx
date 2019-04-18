@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 
 export const Button = styled.button`
@@ -7,4 +6,5 @@ export const Button = styled.button`
   border-radius: 4px;
   font-weight: bold;
   font-size: 20px;
+  margin: 10px 0;
 `;

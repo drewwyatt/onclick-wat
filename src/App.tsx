@@ -1,32 +1,32 @@
 import React, { Component, FC } from 'react';
 import { SomeWrappedExternalLib } from './SomeWrappedExternalLib';
-import { Button } from './components';
-import { NativeEventListener, Event } from './NativeEventListener';
+import { Button, NativeEventButton } from './components';
 import './App.css';
 
-const listener: EventListener = e => {
-  e.stopImmediatePropagation();
-  console.log('HELLO!');
+let count: number = 0;
+const setCount = (n: number) => {
+  document.title = n.toString();
+}
+
+const listener  = (e: any) => {
+  if (!!e && !!e.stopImmediatePropagation) {
+    e.stopImmediatePropagation();
+  }
+  setCount(++count);
 };
 
-const OtherButton: FC = () => {
-  return (
-    <NativeEventListener events={[[Event.onClick, listener]]}>
-      <Button>Other Button</Button>
-    </NativeEventListener>
-  );
-};
+setCount(0);
 
 class App extends Component {
   render() {
     return (
       <div>
+        <Button onClick={listener}>Increment Title</Button>
+
         <SomeWrappedExternalLib>
-          <p>this is some button that we have added</p>
-          <Button onClick={() => console.log('hello.')}>hey</Button>
-          <OtherButton />
+          <Button onClick={listener}>Increment Title</Button>
+          <NativeEventButton onClick={listener}>Increment Title With Native Event</NativeEventButton>
         </SomeWrappedExternalLib>
-        whoop
       </div>
     );
   }
