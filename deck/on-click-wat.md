@@ -16,7 +16,9 @@ Software Engineer @ Peloton
 ---
 
 
-# Let's talk about events in React
+# Let's talk about
+
+# events in React
 
 ---
 
@@ -43,15 +45,15 @@ const MyComponent = () => (<button onClick={handler}>🔥</button>)
 ---
 
 ```jsx
-const ref = findDomNode(this)
-ref.addEventListener('click', handler)
+const el = findDomNode(this)
+el.addEventListener('click', handler)
 ```
 
 ---
 
 ```jsx
-const ref = findDomNode(this)
-ref.addEventListener('click', handler)
+const el = findDomNode(this)
+el.addEventListener('click', handler)
 ```
 
 (or something)
@@ -59,6 +61,10 @@ ref.addEventListener('click', handler)
 ---
 
 ## Synthetic Events
+
+## +
+
+## Global Event Handler
 
 ---
 
