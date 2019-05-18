@@ -154,3 +154,53 @@ still no.
 ## What's going on here?
 
 The problem (this is where the first half of this article becomes relevant) is that JWPlayer is attaching its *native* event listener directly to some element on the page that our 🔊 button is a child of. Our button's handler is attached to `document` (the global, top-level delegate we learned about above). This event is going to bubble to `JWPlayer`'s handler long before it hits ours. So, by the time we call `stopPropagation()` (or anything else), it's too late.
+
+## What can we do?
+
+We do the thing that I used to think `onClick` was doing.
+
+**DISCLAIMER:** There are lots of reasons that React handles events the way it does:
+
+- performance
+- cross-browser compatability
+- bubbling order (in the event you are using something like [portals](https://reactjs.org/docs/portals.html))
+
+**USE THIS SPARINGLY** (and only when absolutely necessary)
+
+With that out of the way, let's make  a [hook](https://reactjs.org/docs/hooks-intro.html)!
+
+```typescript
+// useNativeEvent.ts
+
+import { useEffect, createRef } from 'react';
+
+const stopPropagationAndUseHandler = (handler: EventListener): EventListener => e => {
+  e.stopImmediatePropagation();
+  handler(e);
+}
+
+export const useNativeEvent = (type: string, handler: EventListener) => {
+  const ref: React.RefObject<any> = createRef();
+
+  useEffect(
+    () => {
+      if (ref.current) {
+        ref.current.addEventListener(type, stopPropagationAndUseHandler(handler), true);
+      }
+    },
+    [ref]
+  );
+
+  return ref;
+};
+```
+
+### Let's break this down
+
+#### [createRef](https://reactjs.org/docs/refs-and-the-dom.html#creating-refs)
+
+#### [useEffect](https://reactjs.org/docs/hooks-reference.html#useeffect)
+
+#### stopPropagationAndUserHandler
+
+
