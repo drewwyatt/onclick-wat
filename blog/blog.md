@@ -24,7 +24,7 @@ Okay, that makes sense. What else?
 
 > The SyntheticEvent is pooled. This means that the SyntheticEvent object will be reused and all properties will be nullified after the event callback has been invoked. This is for performance reasons. As such, you cannot access the event in an asynchronous way.
 
-ALright. So they do that for compatability *and* performance. What's the big deal though?
+Alright. So they do that for compatability *and* performance. What's the big deal though?
 
 Well, it's not **just** `SyntheticEvent` that's important here.
 
@@ -108,4 +108,49 @@ What you are seeing here (attached to document) is the global event delegate tha
 
 ## Why are you telling me all of this?
 
+Fair question. Candidly, most of the time, none of this matters. *How* React chooses to fire a given handler when a button is clicked is something that the developers using React never need to think about.
 
+Unless you are using a third-party library that 8s **not** attaching its event listeners with React.
+
+## E.G.
+
+I am member of the Digital team at Peloton. One of the projects I work on is the video player for [members.onepeloton.com](https://members.onepeloton.com). It looks like this:
+
+![Video Player Screenshot](peloton-player.png)
+
+We render custom controls (built in React) that we place in an overlay on top of [JWPlayer](https://github.com/jwplayer/jwplayer), which handles the streaming (and does not use React).
+
+Out of the box, JWPlayer attaches a number of event Listeners to elements to handle common use cases (e.g. using spacebar to pause or play the video). Most of these are helpful.
+
+One instance, where this was not helpful, was when our team was working on keyboard accessibilty for our custom volume control.
+
+If a user is using their mouse, hovering over the speaker icon (🔊) will show a volume slider that can be adjusted using the mouse. When using a keyboard, however, this requires some extra steps:
+
+1) `tab` to speaker icon
+2) press `enter` or `spacebar` to open the slider
+3) `tab` to the slider
+4) use the arrow keys to adjust the volume
+
+After implementing that behavior, we ran into a frustrating issue: hitting `enter` or `spacebar` **did** open the volume slider, but it **also** toggle the pause/play state of the video.
+
+No problem, right? All we needed to do was add `event.stopPropagation()` to to our event handler.
+
+That didn't work.
+
+hmmm... Okay. `event.preventDefault()` it is.
+
+Nope.
+
+`event.stopImmediatePropagation()`?
+
+```
+Uncaught TypeError: event.stopImmediatePropagation is not a function
+```
+
+Okay, well I haven't done this in a while, `return false;`?
+
+still no.
+
+## What's going on here?
+
+The problem (this is where the first half of this article becomes relevant) is that JWPlayer is attaching its *native* event listener directly to some element on the page that our 🔊 button is a child of. Our button's handler is attached to `document` (the global, top-level delegate we learned about above). This event is going to bubble to `JWPlayer`'s handler long before it hits ours. So, by the time we call `stopPropagation()` (or anything else), it's too late.
